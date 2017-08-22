@@ -1,0 +1,27 @@
+{
+  "name": "marblecutter",
+  "description": "Dynamic raster processing on AWS",
+  "lambda": {
+    "memory": 1536,
+    "timeout": 15
+  },
+  "regions": ["us-east-1"],
+  "hooks": {
+    "build": "make deps/deps.tgz && tar zxf deps/deps.tgz",
+    "clean": "rm -rf .pypath/ lib/ share/"
+  },
+  "proxy": {
+    "command": "python -S app.py",
+    "backoff": {
+      "attempts": 1
+    }
+  },
+  "environment": {
+    "DATABASE_URL": "{{ DATABASE_URL }}",
+    "CPL_TMPDIR": "/tmp",
+    "GDAL_CACHEMAX": "512",
+    "GDAL_DISABLE_READDIR_ON_OPEN": "TRUE",
+    "VSI_CACHE": "TRUE",
+    "VSI_CACHE_SIZE": "536870912"
+  }
+}

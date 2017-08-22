@@ -1,0 +1,9 @@
+!*.pyc
+*.hbs
+*.json
+.git/
+.pypath/*.py
+deps/
+functions/
+node_modules/
+task/

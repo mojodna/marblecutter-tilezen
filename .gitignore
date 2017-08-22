@@ -1,0 +1,10 @@
+node_modules/
+environment.json
+venv/
+.env
+project.json
+up.json
+.cache/
+marblecutter.egg-info/
+*.pyc
+*.tif
