@@ -5,11 +5,17 @@ S3-hosted GeoTIFFs (digital elevation models and aerial imagery).
 
 ## Development
 
-A `docker-compose.yml` has been provided to facilitate development. To start,
-run:
+A `docker-compose.yml` has been provided to facilitate development. To start the
+web server, run:
 
 ```bash
 docker-compose up
+```
+
+To start it in standalone mode, run:
+
+```bash
+docker-compose run --entrypoint bash marblecutter
 ```
 
 ## Deployment
