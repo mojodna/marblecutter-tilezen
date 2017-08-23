@@ -25,3 +25,6 @@ deps/deps.tgz: deps/Dockerfile deps/required.txt
 
 clean:
 	rm -f deps/deps.tgz
+
+server:
+	docker build --build-arg http_proxy=$(http_proxy) -t quay.io/mojodna/marblecutter-tilezen .

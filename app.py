@@ -5,7 +5,7 @@ import logging
 import os
 import signal
 
-from marblecutter.web import app
+from tilezen.web import app
 
 logging.basicConfig(level=logging.INFO)
 LOG = logging.getLogger(__name__)
@@ -35,6 +35,7 @@ class TimeoutMiddleware:
             signal.setitimer(signal.ITIMER_REAL, 0)
 
 
+# TODO make this configurable (or base it on an X-header containing the amount of time remaining)
 app.wsgi_app = TimeoutMiddleware(app.wsgi_app, 14000)
 
 if __name__ == "__main__":
