@@ -1,13 +1,5 @@
 cachetools ~= 2.0.0
-flask == 0.12.2
-flask-cors == 3.0.3
-haversine == 0.4.5
-https://github.com/mojodna/marblecutter/archive/master.tar.gz#egg=marblecutter-dev[color_ramp,postgis,web]
-matplotlib == 2.0.2
-mercantile >= 0.10.0
-numpy == 1.13.1
-Pillow == 4.1.1
-psycopg2 == 2.7.1
+# marblecutter[color_ramp,postgis,web]
+https://github.com/mojodna/marblecutter/archive/master.tar.gz#egg=marblecutter[color_ramp,postgis,web]
 # rasterio[s3] >= 1.0a10 --no-binary rasterio
-https://github.com/mapbox/rasterio/archive/93d5e81.tar.gz#egg=rasterio-1.0a10[s3]
-scipy == 0.19.0
+https://github.com/mapbox/rasterio/archive/master.tar.gz#egg=rasterio[s3]

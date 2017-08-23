@@ -59,14 +59,15 @@ ENV PATH /var/task/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/
 
 WORKDIR /var/task
 
-COPY requirements.txt /var/task/requirements.txt
+COPY requirements-lambda.txt /var/task/
+COPY requirements.txt /var/task/
 
 ENV PYTHONPATH /var/task/.pypath
 
 RUN \
   mkdir -p .pypath && \
   pip install -U numpy Cython -t .pypath/ && \
-  pip install -r requirements.txt -t .pypath/
+  pip install -r requirements-lambda.txt -t .pypath/
 
 RUN find . -name \*.so\* -exec strip {} \;
 

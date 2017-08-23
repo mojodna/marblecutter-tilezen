@@ -29,10 +29,11 @@ RUN apt-get update \
 
 WORKDIR /opt/marblecutter
 
-COPY requirements.txt /opt/marblecutter/requirements.txt
+COPY requirements-server.txt /opt/marblecutter/
+COPY requirements.txt /opt/marblecutter/
 
-RUN pip install -U gevent gunicorn numpy && \
-  pip install -r requirements.txt && \
+RUN pip install -U pip numpy && \
+  pip install -r requirements-server.txt && \
   rm -rf /root/.cache
 
 USER nobody
