@@ -21,5 +21,7 @@ services:
       - POSTGRES_USER=mapzen
       - POSTGRES_PASSWORD=mapzen
       - POSTGRES_DB=elevation
+    volumes:
+      - pgdata:/var/lib/postgresql/data
 volumes:
   pgdata:
