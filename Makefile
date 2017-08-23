@@ -1,12 +1,12 @@
 PATH := node_modules/.bin:$(PATH)
 
-deploy-apex: project.json
+deploy-apex: project.json deps/deps.tgz
 	apex deploy -l debug -E environment.json
 
 project.json: project.json.hbs .env node_modules/.bin/interp
 	interp < $< > $@
 
-deploy-up: up.json
+deploy-up: up.json deps/deps.tgz
 	up
 
 up.json: up.json.hbs .env node_modules/.bin/interp
