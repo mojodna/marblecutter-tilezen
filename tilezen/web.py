@@ -20,9 +20,6 @@ LOG = logging.getLogger(__name__)
 GEOTIFF_FORMAT = GeoTIFF()
 HILLSHADE_TRANSFORMATION = Hillshade(resample=True, add_slopeshade=True)
 
-BUFFERS = {
-    "buffered_normal": 2,
-}
 FORMATS = {
     "buffered_normal": PNG(),
     "hillshade": ColorRamp(),
