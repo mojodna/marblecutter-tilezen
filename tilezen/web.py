@@ -132,6 +132,3 @@ def render_skadi(_, tile, **kwargs):
     headers, data = skadi.render_tile(tile)
 
     return data, 200, headers
-
-
-static = app.send_static_file
