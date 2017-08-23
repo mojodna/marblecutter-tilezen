@@ -9,7 +9,9 @@ from mercantile import Tile
 
 from marblecutter import tiling
 from marblecutter.catalogs import PostGISCatalog
-from marblecutter.formats import PNG, ColorRamp, GeoTIFF
+from marblecutter.formats.color_ramp import ColorRamp
+from marblecutter.formats.geotiff import GeoTIFF
+from marblecutter.formats.png import PNG
 from marblecutter.web import app
 
 from . import skadi
