@@ -39,6 +39,8 @@
 .pypath/attr/exceptions.pyc
 .pypath/attr/filters.pyc
 .pypath/attr/validators.pyc
+.pypath/boto3/*
+.pypath/botocore/*
 .pypath/cachetools/*
 .pypath/certifi/*
 .pypath/chardet/*
@@ -103,6 +105,7 @@
 .pypath/jinja2/tests.pyc
 .pypath/jinja2/utils.pyc
 .pypath/jinja2/visitor.pyc
+.pypath/jmespath/*
 .pypath/marblecutter/*
 .pypath/markupsafe/__init__.pyc
 .pypath/markupsafe/_compat.pyc
