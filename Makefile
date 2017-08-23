@@ -1,10 +1,5 @@
 PATH := node_modules/.bin:$(PATH)
 
-.NOTPARALLEL:
-.ONESHELL:
-
-tmp := $(shell mktemp -u)
-
 deploy-apex: project.json
 	apex deploy -l debug -E environment.json
 
