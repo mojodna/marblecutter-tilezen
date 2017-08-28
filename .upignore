@@ -1,10 +1,11 @@
-!.pypath/
 !*.pyc
 *.hbs
 *.json
 .git/
-.pypath/*.py
 deps/
 functions/
 node_modules/
 task/
+!.pypath/
+!.pypath/*/.libs/
+.pypath/*.py
