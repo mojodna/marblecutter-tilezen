@@ -42,8 +42,17 @@ def catalog():
     return PostGISCatalog()
 
 
-@app.route("/<prefix>/<renderer>/")
+def make_prefix():
+    host = request.headers.get("X-Forwarded-Host",
+                               request.headers.get("Host", ""))
+
+    # sniff for API Gateway
+    if ".execute-api." in host and ".amazonaws.com" in host:
+        return request.headers.get("X-Stage")
+
+
 @app.route("/<renderer>/")
+@app.route("/<prefix>/<renderer>/")
 def meta(renderer, **kwargs):
     if renderer not in RENDERERS:
         return '', 404
@@ -61,15 +70,15 @@ def meta(renderer, **kwargs):
                     "meta",
                     _external=True,
                     _scheme="",
-                    prefix=request.headers.get("X-Stage"),
+                    prefix=make_prefix(),
                     renderer=renderer))
         ]
 
     return jsonify(meta)
 
 
-@app.route("/<prefix>/<renderer>/preview")
 @app.route("/<renderer>/preview")
+@app.route("/<prefix>/<renderer>/preview")
 def preview(renderer, **kwargs):
     if renderer not in RENDERERS:
         return '', 404
@@ -81,12 +90,12 @@ def preview(renderer, **kwargs):
                 "meta",
                 _external=True,
                 _scheme="",
-                prefix=request.headers.get("X-Stage"),
+                prefix=make_prefix(),
                 renderer=renderer))
 
 
-@app.route("/<prefix>/geotiff/<int:z>/<int:x>/<int:y>.tif")
 @app.route("/geotiff/<int:z>/<int:x>/<int:y>.tif")
+@app.route("/<prefix>/geotiff/<int:z>/<int:x>/<int:y>.tif")
 def render_geotiff(z, x, y, **kwargs):
     tile = Tile(x, y, z)
 
@@ -96,10 +105,10 @@ def render_geotiff(z, x, y, **kwargs):
     return data, 200, headers
 
 
-@app.route("/<prefix>/<renderer>/<int:z>/<int:x>/<int:y>.png")
 @app.route("/<renderer>hillshade/<int:z>/<int:x>/<int:y>.png")
-@app.route("/<prefix>/<renderer>/<int:z>/<int:x>/<int:y>@<int:scale>x.png")
 @app.route("/<renderer>/<int:z>/<int:x>/<int:y>@<int:scale>x.png")
+@app.route("/<prefix>/<renderer>/<int:z>/<int:x>/<int:y>.png")
+@app.route("/<prefix>/<renderer>/<int:z>/<int:x>/<int:y>@<int:scale>x.png")
 def render_png(renderer, z, x, y, scale=1, **kwargs):
     tile = Tile(x, y, z)
 
@@ -113,8 +122,8 @@ def render_png(renderer, z, x, y, scale=1, **kwargs):
     return data, 200, headers
 
 
-@app.route("/<prefix>/hillshade/<int:z>/<int:x>/<int:y>.tif")
 @app.route("/hillshade/<int:z>/<int:x>/<int:y>.tif")
+@app.route("/<prefix>/hillshade/<int:z>/<int:x>/<int:y>.tif")
 def render_hillshade_tiff(z, x, y, **kwargs):
     tile = Tile(x, y, z)
 
@@ -128,8 +137,8 @@ def render_hillshade_tiff(z, x, y, **kwargs):
     return data, 200, headers
 
 
-@app.route("/<prefix>/skadi/<_>/<tile>.hgt.gz")
 @app.route("/skadi/<_>/<tile>.hgt.gz")
+@app.route("/<prefix>/skadi/<_>/<tile>.hgt.gz")
 def render_skadi(_, tile, **kwargs):
     headers, data = skadi.render_tile(tile)
 
