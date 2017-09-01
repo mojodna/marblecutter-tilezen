@@ -8,3 +8,4 @@ up.json
 marblecutter.egg-info/
 *.pyc
 *.tif
+out.zip
