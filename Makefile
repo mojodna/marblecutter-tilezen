@@ -16,7 +16,7 @@ node_modules/.bin/interp:
 	npm install interp
 
 deps/deps.tgz: deps/Dockerfile deps/required.txt
-	docker run --rm --entrypoint tar $$(docker build --build-arg http_proxy=$(http_proxy) -q -f $< .) zc -C /var/task . > $@
+	docker run --rm --entrypoint tar $$(docker build --build-arg http_proxy=$(http_proxy) -t marblecutter-tilezen-deps -q -f $< .) zc -C /var/task . > $@
 
 clean:
 	rm -f deps/deps.tgz
