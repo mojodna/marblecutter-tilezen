@@ -35,8 +35,20 @@ class TimeoutMiddleware:
             signal.setitimer(signal.ITIMER_REAL, 0)
 
 
+class HostMiddleware:
+    def __init__(self, app):
+        self.wrapped_app = app
+
+    def __call__(self, environ, start_response):
+        # treat X-Forwarded-Host as Host
+        environ["HTTP_HOST"] = environ.get("HTTP_X_FORWARDED_HOST",
+                                           environ.get("HTTP_HOST"))
+
+        return self.wrapped_app(environ, start_response)
+
+
 # TODO make this configurable (or base it on an X-header containing the amount of time remaining)
-app.wsgi_app = TimeoutMiddleware(app.wsgi_app, 14000)
+app.wsgi_app = HostMiddleware(TimeoutMiddleware(app.wsgi_app, 14000))
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=int(os.getenv("PORT", 8000)), debug=True)
+    app.run(host="0.0.0.0", port=int(os.getenv("PORT", 8000)))
