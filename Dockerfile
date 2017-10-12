@@ -37,6 +37,8 @@ RUN pip install -U pip numpy && \
   pip install -r requirements-server.txt && \
   rm -rf /root/.cache
 
+COPY tilezen /opt/marblecutter/tilezen
+
 USER nobody
 
 ENTRYPOINT ["gunicorn", "-k", "gevent", "-b", "0.0.0.0", "--access-logfile", "-", "tilezen.web:app"]
