@@ -1,4 +1,4 @@
-FROM quay.io/mojodna/gdal22
+FROM quay.io/mojodna/gdal:trunk
 MAINTAINER Seth Fitzsimmons <seth@mojodna.net>
 
 ARG http_proxy
@@ -6,6 +6,7 @@ ARG http_proxy
 ENV DEBIAN_FRONTEND noninteractive
 ENV GDAL_CACHEMAX 512
 ENV GDAL_DISABLE_READDIR_ON_OPEN TRUE
+ENV GDAL_HTTP_MERGE_CONSECUTIVE_RANGES YES
 ENV VSI_CACHE TRUE
 # tune this according to how much memory is available
 ENV VSI_CACHE_SIZE 536870912

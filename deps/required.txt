@@ -580,6 +580,8 @@
 .pypath/werkzeug/utils.pyc
 .pypath/werkzeug/wrappers.pyc
 .pypath/werkzeug/wsgi.pyc
+lib/libcurl.so*
 lib/libgdal.so*
+lib/libnghttp2.so*
 lib/libproj.so*
 share/gdal/*

@@ -2,19 +2,37 @@ FROM lambci/lambda:build-python2.7
 
 ARG http_proxy
 
+# add gdal-config and curl to PATH for rasterio + libcurl usage
+ENV PATH /var/task/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
 # Install deps
 
 RUN \
   rpm --rebuilddb && \
   yum install -y \
     automake16 \
-    libcurl-devel \
     libpng-devel
+
+# Fetch and build nghttp2
+
+RUN mkdir /tmp/nghttp2 \
+  && curl -sfL https://github.com/nghttp2/nghttp2/releases/download/v1.26.0/nghttp2-1.26.0.tar.gz | tar zxf - -C /tmp/nghttp2 --strip-components=1 \
+  && cd /tmp/nghttp2 \
+  && ./configure --enable-lib-only --prefix=/var/task \
+  && make -j $(nproc) install
+
+# Fetch and install libcurl
+
+RUN mkdir /tmp/curl \
+  && curl -sfL https://curl.haxx.se/download/curl-7.56.0.tar.gz | tar zxf - -C /tmp/curl --strip-components=1 \
+  && cd /tmp/curl \
+  && ./configure --prefix=/var/task --disable-manual --disable-cookies --with-nghttp2=/var/task \
+  && make -j $(nproc) install
 
 # Fetch PROJ.4
 
 RUN \
-  curl -L http://download.osgeo.org/proj/proj-4.9.3.tar.gz | tar zxf - -C /tmp
+  curl -sfL http://download.osgeo.org/proj/proj-4.9.3.tar.gz | tar zxf - -C /tmp
 
 # Build and install PROJ.4
 
@@ -30,7 +48,7 @@ RUN \
 
 RUN \
   mkdir -p /tmp/gdal && \
-  curl -L http://download.osgeo.org/gdal/2.2.1/gdal-2.2.1.tar.gz | tar zxf - -C /tmp/gdal --strip-components=1
+  curl -sfL https://github.com/OSGeo/gdal/archive/5c1e079.tar.gz | tar zxf - -C /tmp/gdal --strip-components=2
 
 # Build + install GDAL
 
@@ -40,6 +58,7 @@ RUN \
   ./configure \
     --prefix=/var/task \
     --datarootdir=/var/task/share/gdal \
+    --with-curl=/var/task/bin/curl-config \
     --with-jpeg=internal \
     --without-qhull \
     --without-mrf \
@@ -50,10 +69,6 @@ RUN \
     --without-pcidsk && \
   make -j $(nproc) && \
   make install
-
-# add gdal-config to PATH so that rasterio can build
-
-ENV PATH /var/task/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
 # Install Python deps
 
