@@ -3,13 +3,16 @@ PATH := node_modules/.bin:$(PATH)
 deploy-apex: project.json deps/deps.tgz
 	apex deploy -l debug -E environment.json
 
-project.json: project.json.hbs .env node_modules/.bin/interp
+.PHONY: project.json
+project.json: project.json.hbs node_modules/.bin/interp
 	interp < $< > $@
 
 deploy-up: up.json deps/deps.tgz
 	up
 
-up.json: up.json.hbs .env node_modules/.bin/interp
+# always build this in case the *environment* changes
+.PHONY: up.json
+up.json: up.json.hbs node_modules/.bin/interp
 	interp < $< > $@
 
 node_modules/.bin/interp:
