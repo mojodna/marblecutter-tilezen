@@ -1,9 +1,8 @@
-
 {
-  "description": "",
+  "description": "Dynamic DEM processing on AWS",
   "runtime": "python",
   "hooks": {
-    "build": "make -C ../.. deps/deps.tgz && tar zxf ../../deps/deps.tgz",
+    "build": "make -C ../.. deps/tiler-deps.tgz && tar zxf ../../deps/tiler-deps.tgz",
     "clean": "rm -rf .pypath/ lib/ share/"
   },
   "environment": {

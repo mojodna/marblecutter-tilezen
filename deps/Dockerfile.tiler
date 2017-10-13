@@ -86,7 +86,8 @@ RUN \
 
 RUN find . -name \*.so\* -exec strip {} \;
 
-COPY deps/required.txt /var/task/required.txt
+COPY deps/tiler-required.txt /var/task/required.txt
 COPY deps/prune.sh /var/task/prune.sh
 
+RUN find . -name *.json -delete
 RUN /var/task/prune.sh

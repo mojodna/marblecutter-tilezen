@@ -19,4 +19,4 @@ venv
 .DS_Store
 .envrc
 !deps/prune.sh
-!deps/required.txt
+!deps/*-required.txt
