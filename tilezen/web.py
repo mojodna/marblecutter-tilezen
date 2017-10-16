@@ -12,6 +12,7 @@ from marblecutter.catalogs.postgis import PostGISCatalog
 from marblecutter.formats.color_ramp import ColorRamp
 from marblecutter.formats.geotiff import GeoTIFF
 from marblecutter.formats.png import PNG
+from marblecutter.transformations import Image
 from marblecutter.web import app
 
 from . import skadi
@@ -19,27 +20,33 @@ from .transformations import Hillshade, Normal, Terrarium
 
 LOG = logging.getLogger(__name__)
 
+ELEVATION_CATALOG = PostGISCatalog()
 GEOTIFF_FORMAT = GeoTIFF()
 HILLSHADE_TRANSFORMATION = Hillshade(resample=True, add_slopeshade=True)
+IMAGERY_CATALOG = PostGISCatalog(table="imagery", geometry_column="geom")
 
+CATALOGS = {
+    "buffered_normal": ELEVATION_CATALOG,
+    "hillshade": ELEVATION_CATALOG,
+    "imagery": IMAGERY_CATALOG,
+    "normal": ELEVATION_CATALOG,
+    "terrarium": ELEVATION_CATALOG,
+}
 FORMATS = {
     "buffered_normal": PNG(),
     "hillshade": ColorRamp(),
+    "imagery": PNG(),
     "normal": PNG(),
     "terrarium": PNG(),
 }
-RENDERERS = ["hillshade", "buffered_normal", "normal", "terrarium"]
+RENDERERS = ["hillshade", "imagery", "buffered_normal", "normal", "terrarium"]
 TRANSFORMATIONS = {
     "buffered_normal": Normal(collar=2),
     "hillshade": HILLSHADE_TRANSFORMATION,
+    "imagery": Image(),
     "normal": Normal(),
     "terrarium": Terrarium(),
 }
-
-
-@lru_cache()
-def catalog():
-    return PostGISCatalog()
 
 
 def make_prefix():
@@ -100,7 +107,7 @@ def render_geotiff(z, x, y, **kwargs):
     tile = Tile(x, y, z)
 
     headers, data = tiling.render_tile(
-        tile, catalog(), format=GEOTIFF_FORMAT, scale=2)
+        tile, ELEVATION_CATALOG, format=GEOTIFF_FORMAT, scale=2)
 
     return data, 200, headers
 
@@ -114,7 +121,7 @@ def render_png(renderer, z, x, y, scale=1, **kwargs):
 
     headers, data = tiling.render_tile(
         tile,
-        catalog(),
+        CATALOGS[renderer],
         format=FORMATS[renderer],
         transformation=TRANSFORMATIONS.get(renderer),
         scale=scale)
@@ -129,7 +136,7 @@ def render_hillshade_tiff(z, x, y, **kwargs):
 
     headers, data = tiling.render_tile(
         tile,
-        catalog(),
+        CATALOGS[renderer],
         format=GEOTIFF_FORMAT,
         transformation=HILLSHADE_TRANSFORMATION,
         scale=2)
