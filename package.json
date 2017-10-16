@@ -1,0 +1,33 @@
+{
+  "name": "marblecutter-tilezen",
+  "version": "1.0.0",
+  "description": "This is a standalone (Python / Flask / WSGI) and Lambda-based dynamic tiler for S3-hosted GeoTIFFs (digital elevation models and aerial imagery).",
+  "main": "index.js",
+  "bin": {
+    "marblecutter-tilezen": "index.js"
+  },
+  "directories": {
+    "example": "examples",
+    "lib": "lib"
+  },
+  "dependencies": {
+    "async": "^2.5.0",
+    "aws-sdk": "^2.133.0",
+    "interp": "^0.1.1",
+    "shapefile": "^0.6.6"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mojodna/marblecutter-tilezen.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mojodna/marblecutter-tilezen/issues"
+  },
+  "homepage": "https://github.com/mojodna/marblecutter-tilezen#readme"
+}

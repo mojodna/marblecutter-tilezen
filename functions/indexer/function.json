@@ -1,0 +1,13 @@
+
+{
+  "description": "Index raster sources",
+  "runtime": "nodejs6.10",
+  "timeout": 300,
+  "hooks": {
+    "build": "make -C ../.. deps/indexer-deps.tgz && tar zxf ../../deps/indexer-deps.tgz && npm install",
+    "clean": "rm -rf .local/ bin/gdal_translate bin/gdalwarp bin/jq lib/ share/ prune.sh required.txt requirements-indexer.txt"
+  },
+  "environment": {
+    "AWS_REQUEST_PAYER": "requester"
+  }
+}
