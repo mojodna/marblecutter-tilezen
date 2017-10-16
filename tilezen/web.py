@@ -112,7 +112,7 @@ def render_geotiff(z, x, y, **kwargs):
     return data, 200, headers
 
 
-@app.route("/<renderer>hillshade/<int:z>/<int:x>/<int:y>.png")
+@app.route("/<renderer>/<int:z>/<int:x>/<int:y>.png")
 @app.route("/<renderer>/<int:z>/<int:x>/<int:y>@<int:scale>x.png")
 @app.route("/<prefix>/<renderer>/<int:z>/<int:x>/<int:y>.png")
 @app.route("/<prefix>/<renderer>/<int:z>/<int:x>/<int:y>@<int:scale>x.png")
