@@ -5,9 +5,11 @@
 deps/
 functions/
 !lib/
+naip/
 node_modules/
 !share/
 task/
+tmp/
 !.pypath/
 !.pypath/*/.libs/
 .pypath/*.py
