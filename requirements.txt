@@ -1,5 +1,5 @@
 cachetools ~= 2.0.0
-marblecutter[color_ramp,postgis,web] ~= 0.3.1
-# https://github.com/mojodna/marblecutter/archive/master.tar.gz#egg=marblecutter[color_ramp,postgis,web]
+# marblecutter[color_ramp,postgis,web] ~= 0.3.1
+https://github.com/mojodna/marblecutter/archive/master.tar.gz#egg=marblecutter[color_ramp,postgis,web]
 # rasterio[s3] >= 1.0a11 --no-binary rasterio
-https://github.com/mojodna/rasterio/archive/warped-vrt-boundless-reads.tar.gz#egg=rasterio[s3] --no-binary rasterio
+https://github.com/mapbox/rasterio/archive/51968aee58101d6fb264dfd4e13008a6ee3f3adb.tar.gz#egg=rasterio[s3] --no-binary rasterio
