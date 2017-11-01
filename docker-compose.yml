@@ -7,6 +7,7 @@ services:
     environment:
       - DATABASE_URL=postgis://mapzen:mapzen@postgis/elevation
       - PYTHONPATH=.
+      - AWS_REQUEST_PAYER=requester
     env_file: .env
     volumes:
       - .:/opt/marblecutter/
