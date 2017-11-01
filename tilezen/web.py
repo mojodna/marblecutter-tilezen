@@ -19,7 +19,8 @@ from .transformations import Hillshade, Normal, Terrarium
 LOG = logging.getLogger(__name__)
 
 ELEVATION_CATALOG = PostGISCatalog()
-GEOTIFF_FORMAT = GeoTIFF()
+GEOTIFF_FORMAT = GeoTIFF(area_or_point="Point")
+HILLSHADE_GEOTIFF_FORMAT = GeoTIFF()
 HILLSHADE_TRANSFORMATION = Hillshade(resample=True, add_slopeshade=True)
 IMAGERY_CATALOG = PostGISCatalog(table="imagery", geometry_column="geom")
 
@@ -134,8 +135,8 @@ def render_hillshade_tiff(z, x, y, **kwargs):
 
     headers, data = tiling.render_tile(
         tile,
-        CATALOGS[renderer],
-        format=GEOTIFF_FORMAT,
+        CATALOGS['hillshade'],
+        format=HILLSHADE_GEOTIFF_FORMAT,
         transformation=HILLSHADE_TRANSFORMATION,
         scale=2)
 
