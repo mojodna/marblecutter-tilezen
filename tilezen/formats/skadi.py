@@ -5,16 +5,17 @@ from gzip import GzipFile
 from io import BytesIO
 
 import numpy as np
-from rasterio import transform
-from rasterio.io import MemoryFile
 
 from marblecutter import _nodata
+from rasterio import transform
+from rasterio.io import MemoryFile
 
 CONTENT_TYPE = "application/gzip"
 
 
 def format():
-    def _format((data, (data_bounds, data_crs)), data_format):
+    def _format(pixels, data_format):
+        data, (data_bounds, data_crs) = pixels
         if data_format is not "raw":
             raise Exception("raw data is required")
 

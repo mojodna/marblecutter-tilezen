@@ -2,12 +2,12 @@
 from __future__ import absolute_import, division, print_function
 
 import numpy as np
-from rasterio import transform, warp
-from rasterio.warp import Resampling
 
-from marblecutter import get_resolution_in_meters, get_zoom
+from marblecutter import PixelCollection, get_resolution_in_meters, get_zoom
 from marblecutter.transformations.utils import (TransformationBase,
                                                 apply_latitude_adjustments)
+from rasterio import transform, warp
+from rasterio.warp import Resampling
 
 # from http://www.shadedrelief.com/web_relief/
 EXAGGERATION = {
@@ -49,18 +49,19 @@ class Hillshade(TransformationBase):
         self.resample = resample
         self.add_slopeshade = add_slopeshade
 
-    def transform(self, (data, (bounds, crs))):
+    def transform(self, pixels):
+        data, (bounds, crs) = pixels
         (count, height, width) = data.shape
 
         if count != 1:
             raise Exception("Can't hillshade from multiple bands")
 
-        (dx, dy) = get_resolution_in_meters((bounds, crs), (height, width))
+        (dx, dy) = get_resolution_in_meters(pixels.bounds, (height, width))
         zoom = get_zoom(max(dx, dy))
         # invert resolutions for hillshading purposes
         dy *= -1
 
-        data = apply_latitude_adjustments(data, (bounds, crs))
+        data, _ = apply_latitude_adjustments(pixels)
 
         resample_factor = RESAMPLING.get(zoom, 1.0)
         aff = transform.from_bounds(*bounds, width=width, height=height)
@@ -163,7 +164,7 @@ class Hillshade(TransformationBase):
 
         hs.fill_value = 0
 
-        return (hs, "raw")
+        return PixelCollection(hs, pixels.bounds), "raw"
 
 
 def _hillshade(elevation,

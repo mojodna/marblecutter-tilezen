@@ -3,10 +3,7 @@ from __future__ import absolute_import
 
 import logging
 
-from cachetools.func import lru_cache
 from flask import jsonify, render_template, request, url_for
-from mercantile import Tile
-
 from marblecutter import tiling
 from marblecutter.catalogs.postgis import PostGISCatalog
 from marblecutter.formats.color_ramp import ColorRamp
@@ -14,6 +11,7 @@ from marblecutter.formats.geotiff import GeoTIFF
 from marblecutter.formats.png import PNG
 from marblecutter.transformations import Image
 from marblecutter.web import app
+from mercantile import Tile
 
 from . import skadi
 from .transformations import Hillshade, Normal, Terrarium

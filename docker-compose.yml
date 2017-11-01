@@ -10,11 +10,13 @@ services:
     env_file: .env
     volumes:
       - .:/opt/marblecutter/
+      - ../marblecutter/marblecutter:/usr/local/lib/python2.7/dist-packages/marblecutter
+      - ../marblecutter/marblecutter:/usr/local/lib/python3.5/dist-packages/marblecutter
     ports:
       - "8000:8000"
     links:
       - postgis
-    entrypoint: python
+    entrypoint: python3
     command: server.py
   postgis:
     image: mdillon/postgis:9.6

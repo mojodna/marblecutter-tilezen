@@ -5,7 +5,7 @@ import bisect
 
 import numpy as np
 
-from marblecutter import get_resolution_in_meters
+from marblecutter import PixelCollection, get_resolution_in_meters
 from marblecutter.transformations.utils import (TransformationBase,
                                                 apply_latitude_adjustments)
 
@@ -52,14 +52,15 @@ def _height_mapping_func(h):
 class Normal(TransformationBase):
     buffer = 4
 
-    def transform(self, (data, (bounds, crs))):
+    def transform(self, pixels):
+        data, (bounds, crs) = pixels
         (count, height, width) = data.shape
 
         if count != 1:
             raise Exception("Can't produce normals from multiple bands")
 
-        (dx, dy) = get_resolution_in_meters((bounds, crs), (height, width))
-        data = apply_latitude_adjustments(data, (bounds, crs))[0]
+        (dx, dy) = get_resolution_in_meters(pixels.bounds, (height, width))
+        data = apply_latitude_adjustments(pixels).data[0]
 
         ygrad, xgrad = np.gradient(data, 2)
         img = np.dstack((-1.0 / dx * xgrad, 1.0 / dy * ygrad,
@@ -95,4 +96,4 @@ class Normal(TransformationBase):
         # corresponds to x, y, z, h where x, y and z are the respective
         # components of the normal, and h is an index into a hypsometric tint
         # table (see HEIGHT_TABLE).
-        return (np.dstack((img, hyps)), "RGBA")
+        return PixelCollection(np.dstack((img, hyps)), pixels.bounds), "RGBA"

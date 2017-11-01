@@ -16,8 +16,10 @@ class MemoryCatalog(Catalog):
     def add_source(self, geometry, attributes):
         self._sources.append((geometry, attributes))
 
-    def get_sources(self, (bounds, bounds_crs), resolution):
+    def get_sources(self, bounds, resolution):
         from shapely.geometry import box
+
+        bounds, bounds_crs = bounds
 
         results = []
         zoom = get_zoom(max(resolution))

@@ -21,11 +21,12 @@ RUN apt-get update \
   && apt-get install -y --no-install-recommends \
     build-essential \
     ca-certificates \
-    cython \
+    cython3 \
     git \
-    python-pip \
-    python-wheel \
-    python-setuptools \
+    python3-dev \
+    python3-pip \
+    python3-wheel \
+    python3-setuptools \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
@@ -34,8 +35,8 @@ WORKDIR /opt/marblecutter
 COPY requirements-server.txt /opt/marblecutter/
 COPY requirements.txt /opt/marblecutter/
 
-RUN pip install -U pip numpy && \
-  pip install -r requirements-server.txt && \
+RUN pip3 install -U pip numpy && \
+  pip3 install -r requirements-server.txt && \
   rm -rf /root/.cache
 
 COPY tilezen /opt/marblecutter/tilezen

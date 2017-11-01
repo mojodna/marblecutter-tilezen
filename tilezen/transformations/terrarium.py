@@ -3,11 +3,13 @@ from __future__ import absolute_import, division, print_function
 
 import numpy as np
 
+from marblecutter import PixelCollection
 from marblecutter.transformations.utils import TransformationBase
 
 
 class Terrarium(TransformationBase):
-    def transform(self, (data, (bounds, crs))):
+    def transform(self, pixels):
+        data, bounds = pixels
         (count, height, width) = data.shape
 
         if count != 1:
@@ -32,4 +34,4 @@ class Terrarium(TransformationBase):
         g = (pixels % 256).astype(np.uint8)
         b = ((pixels * 256) % 256).astype(np.uint8)
 
-        return (np.dstack((r, g, b)), 'RGB')
+        return PixelCollection(np.dstack((r, g, b)), bounds), 'RGB'
