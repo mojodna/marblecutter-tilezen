@@ -43,4 +43,5 @@ def render_tile(tile, source_provider):
         source_provider,
         SHAPE,
         SKADI_CRS,
+        data_band_count=1,
         format=SKADI_FORMAT)

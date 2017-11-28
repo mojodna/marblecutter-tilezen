@@ -31,6 +31,9 @@ CATALOGS = {
     "normal": ELEVATION_CATALOG,
     "terrarium": ELEVATION_CATALOG,
 }
+DATA_BAND_COUNTS = {
+    "imagery": 3
+}
 FORMATS = {
     "buffered_normal": PNG(),
     "hillshade": ColorRamp(),
@@ -106,7 +109,11 @@ def render_geotiff(z, x, y, **kwargs):
     tile = Tile(x, y, z)
 
     headers, data = tiling.render_tile(
-        tile, ELEVATION_CATALOG, format=GEOTIFF_FORMAT, scale=2)
+        tile,
+        ELEVATION_CATALOG,
+        format=GEOTIFF_FORMAT,
+        scale=2,
+        data_band_count=1)
 
     return data, 200, headers
 
@@ -123,7 +130,8 @@ def render_png(renderer, z, x, y, scale=1, **kwargs):
         CATALOGS[renderer],
         format=FORMATS[renderer],
         transformation=TRANSFORMATIONS.get(renderer),
-        scale=scale)
+        scale=scale,
+        data_band_count=DATA_BAND_COUNTS.get(renderer, 1))
 
     return data, 200, headers
 
@@ -138,7 +146,8 @@ def render_hillshade_tiff(z, x, y, **kwargs):
         CATALOGS['hillshade'],
         format=HILLSHADE_GEOTIFF_FORMAT,
         transformation=HILLSHADE_TRANSFORMATION,
-        scale=2)
+        scale=2,
+        data_band_count=1)
 
     return data, 200, headers
 

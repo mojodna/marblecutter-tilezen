@@ -6,6 +6,7 @@ CREATE TABLE imagery (
     url text,
     geom geometry(MultiPolygon, 4326),
     resolution double precision,
+    band integer,
     approximate_zoom integer,
     min_zoom integer,
     max_zoom integer,
