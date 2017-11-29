@@ -1,6 +1,7 @@
 # coding=utf-8
 from __future__ import division, print_function
 
+import json
 import logging
 import os
 import signal
@@ -47,8 +48,10 @@ class HostMiddleware:
         return self.wrapped_app(environ, start_response)
 
 
-# TODO make this configurable (or base it on an X-header containing the amount of time remaining)
-app.wsgi_app = HostMiddleware(TimeoutMiddleware(app.wsgi_app, 14000))
+with open("up.json") as config:
+    timeout = (
+        json.load(config).get("proxy", {}).get("timeout", 15) * 1000) - 500
+    app.wsgi_app = HostMiddleware(TimeoutMiddleware(app.wsgi_app, timeout))
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.getenv("PORT", 8000)))
