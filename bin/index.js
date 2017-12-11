@@ -9,7 +9,7 @@ console.log("source:", source);
 console.log("url:", url);
 
 if (source == null || url == null) {
-  console.warn("Usage: index <source> <url>");
+  console.warn("Usage: index <source> <url> [meta]");
   process.exit(1);
 }
 
