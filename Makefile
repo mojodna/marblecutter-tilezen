@@ -34,7 +34,7 @@ deps/tiler-deps.tgz: deps/Dockerfile.tiler deps/tiler-required.txt
 	docker run --rm --entrypoint tar $$(docker build --build-arg http_proxy=$(http_proxy) -t marblecutter-tilezen-tiler-deps -q -f $< .) zc -C /var/task . > $@
 
 clean:
-	rm -f deps/indexer-deps.tgz deps/tiler-deps.tgz
+	rm -f deps/indexer-deps.tgz deps/percentiler-deps.tgz deps/tiler-deps.tgz
 
 server:
 	docker build --build-arg http_proxy=$(http_proxy) -t quay.io/mojodna/marblecutter-tilezen .
