@@ -50,7 +50,7 @@ class HostMiddleware:
 
 with open("up.json") as config:
     timeout = (
-        json.load(config).get("proxy", {}).get("timeout", 15) * 1000) - 500
+        json.load(config).get("proxy", {}).get("timeout", 15) * 1000) - 1000
     app.wsgi_app = HostMiddleware(TimeoutMiddleware(app.wsgi_app, timeout))
 
 if __name__ == "__main__":
