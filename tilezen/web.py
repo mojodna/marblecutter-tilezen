@@ -4,7 +4,7 @@ from __future__ import absolute_import
 import logging
 
 from flask import jsonify, render_template, request, url_for
-from marblecutter import tiling
+from marblecutter import footprints, tiling
 from marblecutter.catalogs.postgis import PostGISCatalog
 from marblecutter.formats.color_ramp import ColorRamp
 from marblecutter.formats.geotiff import GeoTIFF
@@ -22,7 +22,7 @@ ELEVATION_CATALOG = PostGISCatalog()
 GEOTIFF_FORMAT = GeoTIFF(area_or_point="Point")
 HILLSHADE_GEOTIFF_FORMAT = GeoTIFF()
 HILLSHADE_TRANSFORMATION = Hillshade(resample=True, add_slopeshade=True)
-IMAGERY_CATALOG = PostGISCatalog(table="imagery", geometry_column="geom")
+IMAGERY_CATALOG = PostGISCatalog(table="imagery")
 
 CATALOGS = {
     "buffered_normal": ELEVATION_CATALOG,
@@ -31,9 +31,7 @@ CATALOGS = {
     "normal": ELEVATION_CATALOG,
     "terrarium": ELEVATION_CATALOG,
 }
-DATA_BAND_COUNTS = {
-    "imagery": 3
-}
+DATA_BAND_COUNTS = {"imagery": 3}
 FORMATS = {
     "buffered_normal": PNG(),
     "hillshade": ColorRamp(),
@@ -134,6 +132,43 @@ def render_png(renderer, z, x, y, scale=1, **kwargs):
         data_band_count=DATA_BAND_COUNTS.get(renderer, 1))
 
     return data, 200, headers
+
+
+@app.route("/<renderer>/<int:z>/<int:x>/<int:y>.geojson")
+@app.route("/<renderer>/<int:z>/<int:x>/<int:y>@<int:scale>x.geojson")
+@app.route("/<prefix>/<renderer>/<int:z>/<int:x>/<int:y>.geojson")
+@app.route("/<prefix>/<renderer>/<int:z>/<int:x>/<int:y>@<int:scale>x.geojson")
+def render_geojson(renderer, z, x, y, scale=1, **kwargs):
+    tile = Tile(x, y, z)
+
+    data = {
+        "type": "FeatureCollection",
+        "features": [],
+    }
+    headers = {"Content-Type": "application/json"}
+
+    [
+        data["features"].append(footprint)
+        for footprint in footprints.features_for_tile(
+            tile, CATALOGS[renderer], scale=scale)
+    ]
+
+    return jsonify(data), 200, headers
+
+
+@app.route("/<renderer>/<int:z>/<int:x>/<int:y>.json")
+@app.route("/<renderer>/<int:z>/<int:x>/<int:y>@<int:scale>x.json")
+@app.route("/<prefix>/<renderer>/<int:z>/<int:x>/<int:y>.json")
+@app.route("/<prefix>/<renderer>/<int:z>/<int:x>/<int:y>@<int:scale>x.json")
+def render_json(renderer, z, x, y, scale=1, **kwargs):
+    tile = Tile(x, y, z)
+
+    headers = {"Content-Type": "application/json"}
+
+    data = list(
+        footprints.sources_for_tile(tile, CATALOGS[renderer], scale=scale))
+
+    return jsonify(data), 200, headers
 
 
 @app.route("/hillshade/<int:z>/<int:x>/<int:y>.tif")
