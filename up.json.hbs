@@ -2,7 +2,7 @@
   "name": "marblecutter-tilezen",
   "description": "Dynamic DEM processing on AWS",
   "lambda": {
-    "memory": 1536
+    "memory": 3008
   },
   "regions": ["us-east-1"],
   "hooks": {
@@ -14,7 +14,7 @@
     "backoff": {
       "attempts": 1
     },
-    "timeout": 15
+    "timeout": 25
   },
   "environment": {
     "AWS_REQUEST_PAYER": "requester",
