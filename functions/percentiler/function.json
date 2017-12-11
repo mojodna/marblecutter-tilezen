@@ -1,0 +1,13 @@
+
+{
+  "description": "Extract percentiles from raster sources",
+  "runtime": "nodejs6.10",
+  "timeout": 300,
+  "hooks": {
+    "build": "make -C ../.. deps/percentiler-deps.tgz && tar zxf ../../deps/percentiler-deps.tgz && npm install",
+    "clean": "rm -rf .local/ bin/gdal_translate bin/gdalwarp bin/jq bin/rio lib/ share/ prune.sh required.txt requirements-indexer.txt"
+  },
+  "environment": {
+    "PYTHONPATH": "/var/task/.local/lib/python2.7/site-packages:/var/runtime"
+  }
+}
