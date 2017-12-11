@@ -1,2 +1,2 @@
 haversine == 0.4.5
-rasterio[s3] >= 1.0a10 --no-binary rasterio
+rasterio[s3] >= 1.0a12 --no-binary rasterio

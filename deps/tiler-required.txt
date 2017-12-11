@@ -56,6 +56,7 @@
 .pypath/click/termui.pyc
 .pypath/click/types.pyc
 .pypath/click/utils.pyc
+.pypath/concurrent/*
 .pypath/cycler.pyc
 .pypath/dateutil/*
 .pypath/enum/__init__.pyc
@@ -360,6 +361,9 @@
 .pypath/rasterio/warp.pyc
 .pypath/rasterio/windows.pyc
 .pypath/requests/*
+.pypath/rio_tiler/*
+.pypath/rio_toa/*
+.pypath/riomucho/*
 .pypath/scipy/__config__.pyc
 .pypath/scipy/__init__.pyc
 .pypath/scipy/_lib/__init__.pyc
