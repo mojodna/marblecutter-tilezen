@@ -18,7 +18,7 @@ from .transformations import Hillshade, Normal, Terrarium
 
 LOG = logging.getLogger(__name__)
 
-ELEVATION_CATALOG = PostGISCatalog()
+ELEVATION_CATALOG = PostGISCatalog(table="dems")
 GEOTIFF_FORMAT = GeoTIFF(area_or_point="Point")
 HILLSHADE_GEOTIFF_FORMAT = GeoTIFF()
 HILLSHADE_TRANSFORMATION = Hillshade(resample=True, add_slopeshade=True)
