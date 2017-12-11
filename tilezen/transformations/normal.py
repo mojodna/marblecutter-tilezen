@@ -53,7 +53,7 @@ class Normal(TransformationBase):
     buffer = 4
 
     def transform(self, pixels):
-        data, (bounds, crs) = pixels
+        data, (bounds, crs), _ = pixels
         (count, height, width) = data.shape
 
         if count != 1:

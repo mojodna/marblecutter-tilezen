@@ -50,7 +50,7 @@ class Hillshade(TransformationBase):
         self.add_slopeshade = add_slopeshade
 
     def transform(self, pixels):
-        data, (bounds, crs) = pixels
+        data, (bounds, crs), _ = pixels
         (count, height, width) = data.shape
 
         if count != 1:
@@ -61,7 +61,7 @@ class Hillshade(TransformationBase):
         # invert resolutions for hillshading purposes
         dy *= -1
 
-        data, _ = apply_latitude_adjustments(pixels)
+        data = apply_latitude_adjustments(pixels).data
 
         resample_factor = RESAMPLING.get(zoom, 1.0)
         aff = transform.from_bounds(*bounds, width=width, height=height)

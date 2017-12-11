@@ -9,7 +9,7 @@ from marblecutter.transformations.utils import TransformationBase
 
 class Terrarium(TransformationBase):
     def transform(self, pixels):
-        data, bounds = pixels
+        data, bounds, _ = pixels
         (count, height, width) = data.shape
 
         if count != 1:
