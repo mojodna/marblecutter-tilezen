@@ -6,8 +6,8 @@ const async = require("async");
 const env = require("require-env");
 const { Client } = require("pg");
 
-const getInfo = (url, callback) => {
-  return exec(`/var/task/bin/get_info.sh ${url}`, (err, stdout, stderr) => {
+const getInfo = (url, callback) =>
+  exec(`/var/task/bin/get_info.sh ${url}`, (err, stdout, stderr) => {
     if (err) {
       return callback(err);
     }
@@ -18,10 +18,9 @@ const getInfo = (url, callback) => {
       return callback(err);
     }
   });
-};
 
-const indexSource = (source, uri, meta, callback) => {
-  return getInfo(uri, (err, info) => {
+const indexSource = (source, uri, meta, callback) =>
+  getInfo(uri, (err, info) => {
     if (err) {
       return callback(err);
     }
@@ -44,9 +43,10 @@ const indexSource = (source, uri, meta, callback) => {
       const approximateZoom = Math.ceil(
         Math.log2(2 * Math.PI * 6371837 / (resolution * 256))
       );
-      const minZoom = approximateZoom - 4;
+      const minZoom = Math.max(0, approximateZoom - 5);
       const maxZoom = approximateZoom + 2;
 
+      // TODO recipes
       return client.query(
         "INSERT INTO imagery (source, filename, url, geom, resolution, meta, approximate_zoom, min_zoom, max_zoom) VALUES ($1, $2, $3, ST_SetSRID(ST_GeomFromGeoJSON($4), 4326), $5, $6, $7, $8, $9)",
         [
@@ -64,7 +64,6 @@ const indexSource = (source, uri, meta, callback) => {
       );
     });
   });
-};
 
 exports.handle = (event, context, callback) => {
   const { Records: records } = event;
@@ -78,7 +77,11 @@ exports.handle = (event, context, callback) => {
             source: { Value: source },
             url: { Value: url }
           } = record.Sns.MessageAttributes;
-          let { meta: { Value: meta } } = record.Sns.MessageAttributes;
+
+          let {
+            meta: { Value: meta }
+          } = record.Sns.MessageAttributes;
+
           if (meta) {
             try {
               meta = JSON.parse(meta);
