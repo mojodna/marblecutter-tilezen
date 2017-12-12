@@ -9,10 +9,11 @@ CREATE TABLE imagery (
     approximate_zoom integer,
     min_zoom integer,
     max_zoom integer,
-    priority integer DEFAULT 0,
+    priority double precision DEFAULT 0,
     enabled boolean NOT NULL DEFAULT TRUE,
     meta jsonb,
-    bands jsonb
+    bands jsonb,
+    acquired_at timestamp
 );
 
 -- when bands are tracked separately, this needs to change
