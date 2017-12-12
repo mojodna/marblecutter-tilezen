@@ -26,3 +26,9 @@ al/2013/1m/shpfl/naip_3_13_2_1_al.shx
 ```
 
 If `.prj`s are not available, it's safe to assume that these are in EPSG:4269.
+
+
+```sql
+update imagery set acquired_at = (meta->>'SrcImgDate')::timestamp with time zone where meta->'SrcImgDate' is not null;
+update imagery set acquired_at = (meta->>'naip_3_136')::timestamp with time zone where meta->'naip_3_136' is not null;
+```

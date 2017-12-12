@@ -1,1 +1,2 @@
-update imagery set priority=round((meta->'L1_METADATA_FILE'->'IMAGE_ATTRIBUTES'->>'CLOUD_COVER')::numeric) where meta->'L1_METADATA_FILE'->'IMAGE_ATTRIBUTES'->'CLOUD_COVER' is not null;
+update imagery set priority=1 - ((meta->'L1_METADATA_FILE'->'IMAGE_ATTRIBUTES'->>'CLOUD_COVER_LAND')::numeric / 100) where meta->'L1_METADATA_FILE' is not null;
+update imagery set acquired_at=concat(meta->'L1_METADATA_FILE'->'PRODUCT_METADATA'->>'DATE_ACQUIRED', ' ', meta->'L1_METADATA_FILE'->'PRODUCT_METADATA'->>'SCENE_CENTER_TIME')::timestamp with time zone where meta->'L1_METADATA_FILE' is not null;
