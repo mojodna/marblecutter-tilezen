@@ -11,9 +11,9 @@
     "lib": "lib"
   },
   "dependencies": {
-    "async": "^2.5.0",
-    "aws-sdk": "^2.133.0",
-    "interp": "^0.1.1",
+    "async": "^2.6.0",
+    "aws-sdk": "^2.170.0",
+    "interp": "^0.2.0",
     "shapefile": "^0.6.6"
   },
   "devDependencies": {},
