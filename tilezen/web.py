@@ -48,6 +48,8 @@ TRANSFORMATIONS = {
     "terrarium": Terrarium(),
 }
 
+logging.getLogger("botocore.credentials").setLevel(logging.WARNING)
+
 
 def make_prefix():
     host = request.headers.get("X-Forwarded-Host",
