@@ -3,9 +3,8 @@ from __future__ import absolute_import, division
 
 import re
 
-from rasterio.crs import CRS
-
 from marblecutter import render
+from rasterio.crs import CRS
 
 from .formats import Skadi
 
