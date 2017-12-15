@@ -9,7 +9,7 @@ CREATE TABLE imagery (
     approximate_zoom integer,
     min_zoom integer,
     max_zoom integer,
-    priority double precision DEFAULT 0,
+    priority double precision,
     enabled boolean NOT NULL DEFAULT TRUE,
     meta jsonb,
     bands jsonb,
