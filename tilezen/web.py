@@ -137,10 +137,18 @@ def render_png(renderer, z, x, y, scale=1, **kwargs):
 
 
 @app.route("/<renderer>/<int:z>/<int:x>/<int:y>.geojson")
+@app.route("/<renderer>/<int:z>-<int:max_zoom>/<int:x>/<int:y>.geojson")
 @app.route("/<renderer>/<int:z>/<int:x>/<int:y>@<int:scale>x.geojson")
+@app.route(
+    "/<renderer>/<int:z>-<int:max_zoom>/<int:x>/<int:y>@<int:scale>x.geojson")
 @app.route("/<prefix>/<renderer>/<int:z>/<int:x>/<int:y>.geojson")
+@app.route(
+    "/<prefix>/<renderer>-<int:max_zoom>/<int:z>/<int:x>/<int:y>.geojson")
 @app.route("/<prefix>/<renderer>/<int:z>/<int:x>/<int:y>@<int:scale>x.geojson")
-def render_geojson(renderer, z, x, y, scale=1, **kwargs):
+@app.route(
+    "/<prefix>/<renderer>-<int:max_zoom>/<int:z>/<int:x>/<int:y>@<int:scale>x.geojson"
+)
+def render_geojson(renderer, z, x, y, scale=1, max_zoom=None, **kwargs):
     tile = Tile(x, y, z)
 
     data = {
@@ -149,26 +157,50 @@ def render_geojson(renderer, z, x, y, scale=1, **kwargs):
     }
     headers = {"Content-Type": "application/json"}
 
+    min_zoom = None
+    if max_zoom is not None:
+        min_zoom = z
+
     [
         data["features"].append(footprint)
         for footprint in footprints.features_for_tile(
-            tile, CATALOGS[renderer], scale=scale)
+            tile,
+            CATALOGS[renderer],
+            scale=scale,
+            min_zoom=min_zoom,
+            max_zoom=max_zoom)
     ]
 
     return jsonify(data), 200, headers
 
 
 @app.route("/<renderer>/<int:z>/<int:x>/<int:y>.json")
+@app.route("/<renderer>/<int:z>-<int:max_zoom>/<int:x>/<int:y>.json")
 @app.route("/<renderer>/<int:z>/<int:x>/<int:y>@<int:scale>x.json")
+@app.route(
+    "/<renderer>/<int:z>-<int:max_zoom>/<int:x>/<int:y>@<int:scale>x.json")
 @app.route("/<prefix>/<renderer>/<int:z>/<int:x>/<int:y>.json")
+@app.route("/<prefix>/<renderer>/<int:z>-<int:max_zoom>/<int:x>/<int:y>.json")
 @app.route("/<prefix>/<renderer>/<int:z>/<int:x>/<int:y>@<int:scale>x.json")
-def render_json(renderer, z, x, y, scale=1, **kwargs):
+@app.route(
+    "/<prefix>/<renderer>/<int:z>-<int:max_zoom>/<int:x>/<int:y>@<int:scale>x.json"
+)
+def render_json(renderer, z, x, y, scale=1, max_zoom=None, **kwargs):
     tile = Tile(x, y, z)
 
     headers = {"Content-Type": "application/json"}
 
+    min_zoom = None
+    if max_zoom is not None:
+        min_zoom = z
+
     data = list(
-        footprints.sources_for_tile(tile, CATALOGS[renderer], scale=scale))
+        footprints.sources_for_tile(
+            tile,
+            CATALOGS[renderer],
+            scale=scale,
+            min_zoom=min_zoom,
+            max_zoom=max_zoom))
 
     return jsonify(data), 200, headers
 
