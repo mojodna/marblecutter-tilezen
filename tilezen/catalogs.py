@@ -214,12 +214,18 @@ FROM sources
     def get_sources(self, bounds, resolution):
         cursor = self.conn.cursor()
 
+        # TODO this is becoming relatively standard catalog boilerplate
         zoom = get_zoom(max(resolution))
         if bounds.crs == WGS84_CRS:
             left, bottom, right, top = bounds.bounds
         else:
             left, bottom, right, top = warp.transform_bounds(
                 bounds.crs, WGS84_CRS, *bounds.bounds)
+
+        left = left if left != Infinity else -180
+        bottom = bottom if bottom != Infinity else -90
+        right = right if right != Infinity else 180
+        top = top if top != Infinity else 90
 
         try:
             query = """
