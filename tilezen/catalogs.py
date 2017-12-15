@@ -240,8 +240,7 @@ SELECT
   source,
   resolution,
   coalesce(band_info, '{{}}') band_info,
-  coalesce(null, '{{}}') metas,
-  -- coalesce(meta, '{{}}') metas,
+  coalesce(meta, '{{}}') meta,
   coalesce(recipes, '{{}}') recipes,
   acquired_at,
   null band, -- for Source constructor compatibility
