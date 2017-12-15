@@ -233,7 +233,7 @@ WITH bbox AS (
   SELECT SetSRID(GeomFromGeoJSON(?), 4326) geom
 ),
 uncovered AS (
-  SELECT SetSRID(GeomFromGeoJSON(?), 4327) geom
+  SELECT SetSRID(GeomFromGeoJSON(?), 4326) geom
 ),
 date_range AS (
   SELECT
