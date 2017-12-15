@@ -29,28 +29,10 @@ function update_aws_credentials() {
 
 update_aws_credentials
 
-# update input path for GDAL now that rasterio has read it
-if [[ $input =~ "http://" ]] || [[ $input =~ "https://" ]]; then
-  gdal_input="/vsicurl/$input"
-elif [[ $input =~ "s3://" ]]; then
-  gdal_input=$(sed 's|s3://\([^/]*\)/|/vsis3/\1/|' <<< $input)
-fi
-
 info=$(rio info $input)
 resolution=$(get_resolution.py $input)
-small=$(mktemp --tmpdir --suffix=".tif")
 
-# resample using 'average' so that rescaled pixels containing _some_ values
-# don't end up as NODATA (better than sampling with rio shapes for this reason)
-gdalwarp \
-  -q \
-  -r average \
-  -ts $[$(jq -r .width <<< $info) / 100] $[$(jq -r .height <<< $info) / 100] \
-  -srcnodata $(jq -r .nodata <<< $info) \
-  -ovr NONE \
-  $gdal_input $small
-
-rio shapes --mask --as-mask --precision 6 ${small} | \
+rio shapes --mask --as-mask --precision 6 --sampling 100 ${input} | \
   build_metadata.py \
     --meta \
       dimensions=$(jq -c '.shape | reverse' <<< $info) \
@@ -60,5 +42,3 @@ rio shapes --mask --as-mask --precision 6 ${small} | \
       colorinterp=$(jq -c .colorinterp <<< $info) \
       resolution=$(jq -c .res <<< $info) \
       resolution_in_meters=${resolution}
-
-rm -f ${small}
