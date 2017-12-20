@@ -1,4 +1,3 @@
-!*.pyc
 *.hbs
 *.json
 .git/
@@ -12,4 +11,4 @@ task/
 tmp/
 !.pypath/
 !.pypath/*/.libs/
-.pypath/*.py
+!.pypath/*.py
