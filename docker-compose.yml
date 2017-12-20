@@ -8,6 +8,11 @@ services:
       - DATABASE_URL=postgis://mapzen:mapzen@postgis/elevation
       - PYTHONPATH=.
       - AWS_REQUEST_PAYER=requester
+      - CPL_VSIL_CURL_ALLOWED_EXTENSIONS=.vrt,.tif,.ovr,.msk
+      # - CPL_CURL_VERBOSE=YES
+      - GDAL_HTTP_MERGE_CONSECUTIVE_RANGES=YES
+      - GDAL_HTTP_VERSION=2
+      - WEB_CONCURRENCY=10
     env_file: .env
     volumes:
       - .:/opt/marblecutter/
@@ -17,8 +22,6 @@ services:
       - "8000:8000"
     links:
       - postgis
-    entrypoint: python3
-    command: server.py
   postgis:
     image: mdillon/postgis:9.6
     environment:
