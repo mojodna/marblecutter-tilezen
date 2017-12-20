@@ -4,17 +4,6 @@ MAINTAINER Seth Fitzsimmons <seth@mojodna.net>
 ARG http_proxy
 
 ENV DEBIAN_FRONTEND noninteractive
-ENV LC_ALL C.UTF-8
-ENV GDAL_CACHEMAX 512
-ENV GDAL_DISABLE_READDIR_ON_OPEN TRUE
-ENV GDAL_HTTP_MERGE_CONSECUTIVE_RANGES YES
-ENV VSI_CACHE TRUE
-# tune this according to how much memory is available
-ENV VSI_CACHE_SIZE 536870912
-# override this accordingly; should be 2-4x $(nproc)
-ENV WEB_CONCURRENCY 4
-
-EXPOSE 8000
 
 RUN apt-get update \
   && apt-get upgrade -y \
@@ -43,4 +32,14 @@ COPY tilezen /opt/marblecutter/tilezen
 
 USER nobody
 
-ENTRYPOINT ["gunicorn", "-k", "gevent", "-b", "0.0.0.0", "--access-logfile", "-", "tilezen.web:app"]
+ENV LC_ALL C.UTF-8
+ENV GDAL_CACHEMAX 512
+ENV GDAL_DISABLE_READDIR_ON_OPEN TRUE
+ENV GDAL_HTTP_MERGE_CONSECUTIVE_RANGES YES
+ENV VSI_CACHE TRUE
+# tune this according to how much memory is available
+ENV VSI_CACHE_SIZE 536870912
+# override this accordingly; should be 2-4x $(nproc)
+ENV WEB_CONCURRENCY 4
+
+ENTRYPOINT ["gunicorn", "--reload", "-t", "300", "-k", "gevent", "-b", "0.0.0.0", "--access-logfile", "-", "tilezen.web:app"]
