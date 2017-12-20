@@ -16,6 +16,7 @@ from mercantile import Tile
 from . import skadi
 from .transformations import Hillshade, Normal, Terrarium
 
+logging.basicConfig(level=logging.INFO)
 LOG = logging.getLogger(__name__)
 
 ELEVATION_CATALOG = PostGISCatalog(table="dems")
