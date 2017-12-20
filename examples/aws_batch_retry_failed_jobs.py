@@ -36,7 +36,14 @@ def retry_jobs(queue_arn, wait=0, since=0):
         job_datas = client.describe_jobs(jobs=job_ids)['jobs']
 
         for job_data in job_datas:
-            stopped_at = job_data['stoppedAt']
+            stopped_at = job_data.get('stoppedAt')
+
+            if not stopped_at:
+                print "Skipping job because no stoppedAt for job {}".format(
+                    job_data['jobId'],
+                )
+                continue
+
             if oldest_timestamp is None or stopped_at > oldest_timestamp:
                 oldest_timestamp = stopped_at
             job_count += 1
