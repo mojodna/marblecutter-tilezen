@@ -3,8 +3,11 @@ from __future__ import print_function
 
 import argparse
 import logging
+import multiprocessing
 import os
 import sqlite3
+from concurrent import futures
+import threading
 
 import mercantile
 from marblecutter import get_resolution_in_meters, tiling
@@ -122,7 +125,7 @@ class MbtilesOutput(object):
 
 
 # TODO fold this upstream, e.g. footprints.something
-def sources_for_tile(tile, catalog, min_zoom=None, max_zoom=None):
+def upstream_sources_for_tile(tile, catalog, min_zoom=None, max_zoom=None):
     """Render a tile's source footprints."""
     bounds = Bounds(mercantile.bounds(tile), WGS84_CRS)
     shape = (256, 256)
@@ -136,30 +139,32 @@ def sources_for_tile(tile, catalog, min_zoom=None, max_zoom=None):
         include_geometries=True)
 
 
+def sources_for_tile(tile, catalog):
+    """Render a tile's source footprints."""
+    bounds = Bounds(mercantile.bounds(tile), WGS84_CRS)
+    # TODO scale
+    shape = (256, 256)
+    resolution = get_resolution_in_meters(bounds, shape)
+
+    return catalog.get_sources(bounds, resolution)
+
+
 def build_catalog(tile, min_zoom, max_zoom):
     upstream_catalog = PostGISCatalog(table="imagery")
     catalog = SpatialiteCatalog()
 
-    for source in sources_for_tile(
+    for source in upstream_sources_for_tile(
             tile, upstream_catalog, min_zoom=min_zoom, max_zoom=max_zoom):
         catalog.add_source(source)
 
     return catalog
 
 
-def render_tile_exc_wrapper(tile, catalog, output):
-    try:
-        render_tile(tile, catalog, output)
-    except Exception:
-        logger.exception('Error while processing tile %s', tile)
-        raise
-
-
-def render_tile(tile, catalog, output):
+def render_tile_from_sources(tile, sources):
     with Timer() as t:
-        (headers, data) = tiling.render_tile(
+        (headers, data) = tiling.render_tile_from_sources(
             tile,
-            catalog,
+            sources,
             format=PNG_FORMAT,
             transformation=IMAGE_TRANSFORMATION)
 
@@ -173,14 +178,13 @@ def render_tile(tile, catalog, output):
         headers.get('X-Imagery-Sources'),
         headers.get('X-Timers'), )
 
-    write_to_mbtiles(tile, headers, data, output)
+    return headers, data
 
 
 def write_to_mbtiles(tile, headers, data, output):
     try:
         with Timer() as t:
-            outputter = output
-            outputter.add_tile(tile, data)
+            output.add_tile(tile, data)
 
         logger.debug(
             '(%02d/%06d/%06d) Took %0.3fs to write tile to mbtiles://%s',
@@ -188,22 +192,39 @@ def write_to_mbtiles(tile, headers, data, output):
             tile.x,
             tile.y,
             t.elapsed,
-            outputter._filename, )
+            output._filename, )
     except Exception:
         logger.exception("Problem writing to mbtiles")
 
 
-def queue_tile(tile, max_zoom, sources, output):
-    queue_render(tile, sources, output)
+def queue_tile(executor, tile, max_zoom, sources, output):
+    queue_render(executor, tile, sources, output)
 
     if tile.z < max_zoom:
         for child in mercantile.children(tile):
-            queue_tile(child, max_zoom, sources, output)
+            queue_tile(executor, child, max_zoom, sources, output)
 
 
-def queue_render(tile, catalog, output):
+def make_tile_done_callback(tile, output):
+    def tile_done_callback(tile_future):
+        if not tile_future.cancelled():
+            headers, data = tile_future.result()
+
+            logger.info(threading.current_thread())
+            # TODO this needs to occur on the main thread OR on a thread
+            # specifically for MBTiles
+            write_to_mbtiles(tile, headers, data, output)
+
+    return tile_done_callback
+
+
+def queue_render(executor, tile, catalog, output):
     logger.debug('Enqueueing render for tile %s', tile)
-    render_tile_exc_wrapper(tile, catalog, output)
+    # convert to a list to avoid passing the generator across thread boundaries
+    sources = list(sources_for_tile(tile, catalog))
+
+    tile_future = executor.submit(render_tile_from_sources, tile, sources)
+    tile_future.add_done_callback(make_tile_done_callback(tile, output))
 
 
 if __name__ == "__main__":
@@ -226,7 +247,9 @@ if __name__ == "__main__":
     output = MbtilesOutput(fname)
     output.open()
 
-    queue_tile(root, args.max_zoom, catalog, output)
+    with futures.ProcessPoolExecutor(
+            max_workers=multiprocessing.cpu_count() * 5) as executor:
+        queue_tile(executor, root, args.max_zoom, catalog, output)
 
     logger.info('Done processing root pyramid %s to zoom %s', root,
                 args.max_zoom)
