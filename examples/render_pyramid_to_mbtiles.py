@@ -121,6 +121,7 @@ class MbtilesOutput(object):
         self._conn.close()
 
 
+# TODO fold this upstream, e.g. footprints.something
 def sources_for_tile(tile, catalog, min_zoom=None, max_zoom=None):
     """Render a tile's source footprints."""
     bounds = Bounds(mercantile.bounds(tile), WGS84_CRS)
