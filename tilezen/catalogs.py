@@ -254,7 +254,7 @@ LIMIT 1
 
                     urls.add(url)
 
-                if count == 0:
+                if count == 0 or uncovered is None:
                     break
 
         except Exception as e:
