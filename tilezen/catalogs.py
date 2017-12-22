@@ -243,10 +243,16 @@ LIMIT 1
                 count = 0
                 for record in cursor:
                     count += 1
-                    yield Source(*record[:-1])
+                    (url, source, res, band_info, meta, recipes, acquired_at,
+                     band, priority, coverage, geom, uncovered) = record
 
-                    urls.add(record[0])
-                    uncovered = record[-1]
+                    yield Source(url, source, res,
+                                 json.loads(band_info),
+                                 json.loads(meta),
+                                 json.loads(recipes), acquired_at, band,
+                                 priority, coverage)
+
+                    urls.add(url)
 
                 if count == 0:
                     break
