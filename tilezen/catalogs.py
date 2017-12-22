@@ -89,7 +89,7 @@ INSERT INTO footprints (
                   json.dumps(source.meta), json.dumps(source.recipes),
                   json.dumps(source.band_info), None
                   if source.acquired_at is None else
-                  dateutil.parser.parse(source.acquired_at).isoformat(),
+                  dateutil.parser.parse(str(source.acquired_at)).isoformat(),
                   json.dumps(source.geom)))
 
             self.conn.commit()
