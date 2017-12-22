@@ -4,7 +4,9 @@
 deps/
 functions/
 !lib/
+landsat8/
 naip/
+sentinel-2/
 node_modules/
 !share/
 task/
