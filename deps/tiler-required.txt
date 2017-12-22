@@ -361,6 +361,7 @@
 .pypath/rasterio/warp.py
 .pypath/rasterio/windows.py
 .pypath/requests/*
+.pypath/rio_pansharpen/*
 .pypath/rio_tiler/*
 .pypath/rio_toa/*
 .pypath/riomucho/*
