@@ -33,14 +33,14 @@ def _parse_skadi_tile(tile_name):
     return None
 
 
-def render_tile(tile, source_provider):
+def render_tile(tile, catalog):
     """Render a tile into gzipped HGT."""
     bounds = _bbox(*_parse_skadi_tile(tile))
 
     return render(
         (bounds, SKADI_CRS),
-        source_provider,
         SHAPE,
         SKADI_CRS,
+        catalog=catalog,
         data_band_count=1,
         format=SKADI_FORMAT)
